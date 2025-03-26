@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('volunteers', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 255);
+            $table->string('email', 255)->unique();
+            $table->string('contact_number', 255);
+            $table->text('location');
+            $table->text('reason');
+            $table->decimal('donated', 10, 2)->default(0);
+            $table->enum('status', ['Pending', 'Approved', 'Suspended'])->default('Pending');
+            $table->string('image')->default('default/volunteer.png');
             $table->timestamps();
         });
     }
