@@ -22,8 +22,26 @@ class CreatePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|string|max:255',
-            'new_password' => 'required|string|min:6|max:255|confirmed',
+                'email'=>'required|string',
+                'new_password' => [
+                'required',
+                'string',
+                'min:6',
+                'max:32',
+                'confirmed',
+                function ($attribute, $value, $fail) {
+                    if (!preg_match('/[A-Z]/', $value)) {
+                        $fail('Password must include an uppercase letter.');
+                    }
+                    if (!preg_match('/[a-z]/', $value)) {
+                        $fail('Password must include a lowercase letter.');
+                    }
+                    if (!preg_match('/[0-9]/', $value)) {
+                        $fail('Password must include a number.');
+                    }
+                },
+            ],
+
         ];
     }
 }

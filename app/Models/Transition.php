@@ -8,11 +8,15 @@ class Transition extends Model
 {
     protected $fillable = [
         'invoice',
+        'payment_type',
+        'donation_type',
+        'frequency',
         'name',
-        'date',
-        'amount',
-        'status',
         'email',
-        'address'
+        'amount',
+        'phone_number',
+        'remark',
+        'payment_status',
     ];
+
 }

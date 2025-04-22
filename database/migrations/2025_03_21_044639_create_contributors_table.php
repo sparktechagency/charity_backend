@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('contributors', function (Blueprint $table) {
             $table->id();
+            // $table->string('name',255);
+            // $table->string('email',255);
+            // $table->string('contact_number',100);
+            // $table->decimal('bit_online',10.2);
             $table->timestamps();
         });
     }

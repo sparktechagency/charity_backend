@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('reason');
             $table->decimal('donated', 10, 2)->default(0);
             $table->enum('status', ['Pending', 'Approved', 'Suspended'])->default('Pending');
-            $table->string('image')->default('default/volunteer.png');
+            $table->string('upload_cv');
             $table->timestamps();
         });
     }

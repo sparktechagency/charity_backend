@@ -46,16 +46,16 @@ class VolunteerController extends Controller
         try {
             $validated = $request->validated();
             $imagePath = null;
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
+            if ($request->hasFile('upload_cv')) {
+                $image = $request->file('upload_cv');
                 $imageName = time() . '_' . $image->getClientOriginalExtension();
-                $destinationPath = public_path('uploads/volunteer');
+                $destinationPath = public_path('uploads/cv');
                 $image->move($destinationPath, $imageName);
-                $imagePath = 'uploads/volunteers/' . $imageName;
+                $imagePath = 'uploads/cv/' . $imageName;
             }
             $volunteerData = $validated;
             if ($imagePath) {
-                $volunteerData['image'] = $imagePath;
+                $volunteerData['upload_cv'] = $imagePath;
             }
             $donatedAmount = Transition::where('email', $validated['email'])->sum('amount');
             if ($donatedAmount > 0) {

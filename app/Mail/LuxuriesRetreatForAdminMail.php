@@ -25,14 +25,14 @@ class LuxuriesRetreatForAdminMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Luxuries Retreat',
+            subject: 'Donate Art, Antique or Collectables',
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view:'luxuries_retreat',
+            view:'collecttable',
             with:['sender_data'=>$this->sender_data]
         );
     }

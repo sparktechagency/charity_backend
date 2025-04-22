@@ -22,12 +22,14 @@ class ServivorRequest extends FormRequest
     public function rules(): array
     {
         return [
-                'donation_type'=>'required|in:luxurious,online_pay',
-                'name' => 'required|string',
-                'email' => 'required|email',
-                'address' => 'nullable|string',
+                'payment_type'=>'required|in:card','apple_pay','google_pay','paypal_pay',
+                'donation_type'=>'required',
+                'frequency'=>'nullable|in:montly','quantely','annually',
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'remark' => 'nullable|string|max:65,535',
                 'amount' => 'numeric',
-                'status' => 'string|in:Paid,Pending,Failed',
+                'phone_number' => 'nullable|max:100',
         ];
     }
 }

@@ -27,9 +27,8 @@ class CreateVolunteerRequest extends FormRequest
             'contact_number' => 'required|string|max:255',
             'location' => 'required|string',
             'reason' => 'required|string',
-            'donated' => 'nullable|numeric',
             'status' => 'nullable|in:Pending,Approved,Suspended',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'upload_cv' => 'required|mimes:jpeg,png,jpg,pdf|max:10240',
         ];
     }
 }
