@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('podcast_stores', function (Blueprint $table) {
             $table->id();
+            $table->string('podcast_title',255);
+            $table->string('host_title',255);
+            $table->string('guest_title',255);
+            $table->string('host_profile')->default('deafult/user.png');
+            $table->string('guest_profile')->default('deafult/user.png');
+            $table->text('description')->nullable();
+            $table->string('mp3');
+            $table->string('thumbnail')->nullable();
             $table->timestamps();
         });
     }

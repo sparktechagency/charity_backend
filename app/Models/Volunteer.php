@@ -14,6 +14,6 @@ class Volunteer extends Model
         'reason',
         'donated',
         'status',
-        'image',
+        'upload_cv',
     ];
 }

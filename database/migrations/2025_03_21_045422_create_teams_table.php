@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
+            $table->string('name',255);
+            $table->string('designation',255);
+            $table->string('work_experience',255);
+            $table->string('photo',255)->default('deafult/profile.png');
+            $table->text('twitter_link')->nullable();
+            $table->text('linkedIn_link')->nullable();
+            $table->text('instagram_link')->nullable();
+
             $table->timestamps();
         });
     }

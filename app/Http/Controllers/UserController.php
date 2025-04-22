@@ -100,7 +100,7 @@ class UserController extends Controller
             if (!$user) {
                 return $this->sendError('Invalid email', ['email'=>'Email does not exist']);
             }
-            $user->password = Hash::make($validated['password']);
+            $user->password = Hash::make($validated['new_password']);
             $user->save();
             return $this->sendResponse($user, 'New password created successfully.');
         } catch (Exception $e) {
