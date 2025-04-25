@@ -20,7 +20,6 @@ return new class extends Migration
             $table->text('twitter_link')->nullable();
             $table->text('linkedIn_link')->nullable();
             $table->text('instagram_link')->nullable();
-
             $table->timestamps();
         });
     }

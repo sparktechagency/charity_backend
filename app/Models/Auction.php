@@ -20,5 +20,13 @@ class Auction extends Model
         'status',
         'payment_type',
         'card_number',
+        'start_budget',
+        'end_budget',
+        'duration'
     ];
+    public function contributors()
+    {
+        return $this->hasMany(Contributor::class);
+    }
+
 }

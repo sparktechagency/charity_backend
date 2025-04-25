@@ -22,9 +22,9 @@ class ServivorRequest extends FormRequest
     public function rules(): array
     {
         return [
-                'payment_type'=>'required|in:card','apple_pay','google_pay','paypal_pay',
+                'payment_type'=>'required',
                 'donation_type'=>'required',
-                'frequency'=>'nullable|in:montly','quantely','annually',
+                'frequency'=>'nullable',
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
                 'remark' => 'nullable|string|max:65,535',

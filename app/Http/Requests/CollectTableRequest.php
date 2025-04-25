@@ -26,6 +26,7 @@ class CollectTableRequest extends FormRequest
                 'email' => 'required|email|max:255|min:3',
                 'item_name' => 'required|string|max:255|min:3',
                 'description' => 'required|string|max:65535|min:5',
+                'donate_share'=>'required|numeric|min:30|max:100',
                 'images' => 'required|array|max:3',
                 'images.*' => 'mimes:jpeg,jpg,png,pdf|max:10240',
         ];

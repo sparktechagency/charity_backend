@@ -42,6 +42,10 @@
                                     <td style="padding-bottom: 10px;"><strong>Description:</strong>
                                         {{ $sender_data['description'] }}</td>
                                 </tr>
+                                <tr>
+                                    <td style="padding-bottom: 10px;"><strong>Donate:</strong>
+                                        {{ $sender_data['donate_share'] }}%</td>
+                                </tr>
                             </table>
                         </td>
                     </tr>
@@ -53,7 +57,8 @@
                                 <table cellpadding="0" cellspacing="0" width="100%">
                                     <tr>
                                         <td style="padding-bottom: 15px; font-size: 16px; color: #2575fc;">
-                                            <strong>Uploaded Images:</strong></td>
+                                            <strong>Uploaded Images:</strong>
+                                        </td>
                                     </tr>
                                     @foreach ($sender_data['images'] as $image)
                                         <tr>
