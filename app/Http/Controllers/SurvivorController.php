@@ -68,6 +68,7 @@ class SurvivorController extends Controller
                     'email' => $validated['email'],
                     'item_name' => $validated['item_name'],
                     'description' => $validated['description'],
+                    'donate_share' => $validated['donate_share'],
                     'images' => [],
                 ];
                 if ($request->has('images')) {

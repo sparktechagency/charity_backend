@@ -23,8 +23,11 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->string('address',255)->nullable();
             $table->string('profile',255)->nullable();
-            $table->enum('payment_type',['card','apple_pay','google_pay','paypal_pay'])->default('card');
-            $table->string('card_number');
+            $table->enum('payment_type',['card','apple_pay','google_pay','paypal_pay'])->nullable();
+            $table->string('card_number')->nullable();
+            $table->decimal('start_budget',10,2)->default(0);
+            $table->decimal('end_budget',10,2)->default(0);
+            $table->integer('duration')->nullable();
             $table->enum('status',['Pending','Declared','Remove'])->default('Pending');
             $table->timestamps();
         });

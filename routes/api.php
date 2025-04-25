@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuctionController;
+use App\Http\Controllers\ContributorController;
 use App\Http\Controllers\DonationTransactionController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PodcastStoreController;
+use App\Http\Controllers\ServiceBookController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\SurvivorController;
 use App\Http\Controllers\TeamController;
@@ -26,6 +28,11 @@ Route::group(['controller' => UserController::class], function () {
 Route::group(['controller'=>PaymentController::class],function(){
     Route::post('create-payment-intent','createPaymentIntent');
 });
+Route::group(['controller'=>ContributorController::class],function(){
+    Route::post('bit-contributor','BitContributor');
+    Route::get('get-contributor','getContributor')->middleware(['admin','auth:sanctum']);
+    Route::patch('contributor-status-change','contributorStatusChange')->middleware(['admin','auth:sanctum']);
+});
 Route::group(['controller'=>SurvivorController::class],function(){
     Route::post('donate-money','donateMoney');
     Route::post('collect-table','collectTable');
@@ -36,23 +43,27 @@ Route::group(['controller'=>VolunteerController::class],function(){
     Route::patch('volunteer-status','volunteerStatus')->middleware(['admin','auth:sanctum']);
 });
 Route::group(['controller'=>AuctionController::class],function(){
+    Route::get('get-bit-auction','getBitAuction');
     Route::post('auction','auction');
     Route::get('get-auction','getAuction')->middleware(['admin','auth:sanctum']);
-    Route::patch('auction-status','auctionStatus')->middleware(['admin','auth:sanctum']);
+    Route::put('assign-budget','asignBudget')->middleware(['admin','auth:sanctum']);
 });
 Route::group(['controller'=>PodcastStoreController::class],function(){
     Route::get('get-podcast','getPodcast');
     Route::post('create-podcast','createPodCast')->middleware(['admin','auth:sanctum']);
     Route::put('update-podcast','updatePodCast')->middleware(['admin','auth:sanctum']);
     Route::delete('delete-podcast','deletePodcast')->middleware(['admin','auth:sanctum']);
-
 });
 Route::group(['controller'=>TeamController::class],function(){
     Route::get('get-team','getTeam');
     Route::post('create-team','createTeam')->middleware(['admin','auth:sanctum']);
     Route::put('update-team','updateTeam')->middleware(['admin','auth:sanctum']);
     Route::delete('delete-team','deleteTeam')->middleware(['admin','auth:sanctum']);
-
+});
+Route::group(['controller'=>ServiceBookController::class],function(){
+    Route::post('create-book','createBook');
+    Route::get('get-book','getBook')->middleware(['admin','auth:sanctum']);
+    Route::patch('book-status','bookStatus')->middleware(['admin','auth:sanctum']);
 });
 Route::controller(FaqController::class)->group(function () {
     Route::get('get-faqs', 'getFaqs');
