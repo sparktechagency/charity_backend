@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BitContributeRequest;
 use App\Http\Requests\ContributorStatusChangeRequest;
+use App\Mail\ContributorOfAuctionWinnerMail;
 use App\Models\Contributor;
 use App\Models\User;
 use App\Notifications\BitContributorNotification;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ContributorController extends Controller
 {
@@ -95,12 +97,16 @@ class ContributorController extends Controller
     {
         try {
             $validated = $request->validated();
-            $contributor = Contributor::find($validated['contributor_id']);
+            $contributor = Contributor::with('auction')->find($validated['contributor_id']);
             if (!$contributor) {
                 return $this->sendError("Contributor not found.");
             }
             $contributor->status = $validated['status'];
             $contributor->save();
+
+            if ($contributor->status === 'winner') {
+                Mail::to($contributor->email)->queue(new ContributorOfAuctionWinnerMail($contributor));
+            }
             return $this->sendResponse($contributor, 'Contributor status updated successfully.');
         } catch (Exception $e) {
             return $this->sendError('An error occurred: ' . $e->getMessage(), [], 500);

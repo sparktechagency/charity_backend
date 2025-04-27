@@ -38,6 +38,7 @@ class SurvivorController extends Controller
                     'amount' => $validated['amount'],
                     'donation_type' => $validated['donation_type'],
                     'payment_type' => $validated['payment_type'] ?? 'card',
+                    'transaction_id' => $validated['transaction_id'] ?? 'card',
                     'frequency' => $validated['frequency'] ?? null,
                     'payment_status' => 'Paid',
                 ]);

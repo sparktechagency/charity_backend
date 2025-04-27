@@ -90,18 +90,18 @@ class AuctionController extends Controller
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '-' . $image->getClientOriginalExtension();
-                $imagePath = public_path('auctions/images');
+                $imagePath = public_path('uploads/auctions/');
                 $image->move($imagePath, $imageName);
-                $imagePath = 'auctions/images/' . $imageName;
+                $imagePath = 'uploads/auctions/' . $imageName;
             } else {
                 $imagePath = null;
             }
             if ($request->hasFile('profile')) {
                 $profile = $request->file('profile');
                 $profileName = time() . '-' . $profile->getClientOriginalExtension();
-                $profilePath = public_path('auctions/profiles');
+                $profilePath = public_path('uploads/auctions/profiles/');
                 $profile->move($profilePath, $profileName);
-                $profilePath = 'auctions/profiles/' . $profileName;
+                $profilePath = 'uploads/auctions/profiles/' . $profileName;
             } else {
                 $profilePath = null;
             }

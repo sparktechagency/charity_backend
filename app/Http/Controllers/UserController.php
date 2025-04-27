@@ -6,6 +6,7 @@ use App\Http\Requests\CreatePasswordRequest;
 use App\Http\Requests\ForgotPassword;
 use App\Http\Requests\loginRequest;
 use App\Http\Requests\OTPverifyRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateProfile;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Mail\OTPMail;
@@ -20,6 +21,34 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public function register(RegisterRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $filename = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/users'), $filename);
+
+                $validated['image'] = 'uploads/users/' . $filename;
+            }
+            $validated['password'] = bcrypt($validated['password']);
+            $user = User::create($validated);
+            if($user){
+                $otp = rand(100000, 999999);
+                $otp_info=[
+                    'otp' =>$otp,
+                    'full_name' => $validated['full_name']
+                ];
+                Mail::to($validated['email'])->queue(new OTPMail($otp_info));
+            }
+            return $this->sendResponse($user, 'User registered successfully.');
+        } catch (Exception $e) {
+            return $this->sendError("An error occurred: " . $e->getMessage(), [], 500);
+        }
+    }
+
     public function login(LoginRequest $request)
     {
         try {

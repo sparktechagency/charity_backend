@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\ContributorController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DonationTransactionController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PaymentController;
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['controller' => UserController::class], function () {
+    Route::post('register', 'register');
     Route::post('login', 'login')->withoutMiddleware('auth:sanctum');
     Route::post('forgot-password', 'forgotPassword')->withoutMiddleware('auth:sanctum');
     Route::post('otp-verify', 'otpVerify')->withoutMiddleware('auth:sanctum');
@@ -25,8 +27,12 @@ Route::group(['controller' => UserController::class], function () {
     Route::put('update-profile', 'updateProfile')->middleware(['auth:sanctum','admin']);
     Route::get('profile', 'profile')->middleware(['auth:sanctum','admin']);
 });
+Route::group(['controller'=>DashboardController::class],function(){
+    Route::get('dashboard','dashboard')->middleware(['auth:sanctum','admin']);;
+});
 Route::group(['controller'=>PaymentController::class],function(){
     Route::post('create-payment-intent','createPaymentIntent');
+    Route::post('create-paypal-payment-intent','createPaypalPaymentIntent');
 });
 Route::group(['controller'=>ContributorController::class],function(){
     Route::post('bit-contributor','BitContributor');

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('transitions', function (Blueprint $table) {
             $table->id();
             $table->string('invoice');
+            $table->string('transaction_id');
             $table->enum('payment_type',['card','apple_pay','google_pay','paypal_pay'])->default('card');
             $table->enum('donation_type',['one_time_donate','recurring'])->default('one_time_donate');
             $table->enum('frequency',['montly','quantely','annually'])->nullable();
