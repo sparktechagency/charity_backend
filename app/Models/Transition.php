@@ -17,6 +17,7 @@ class Transition extends Model
         'phone_number',
         'remark',
         'payment_status',
+        'transaction_id'
     ];
 
 }

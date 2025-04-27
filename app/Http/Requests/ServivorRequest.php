@@ -22,6 +22,7 @@ class ServivorRequest extends FormRequest
     public function rules(): array
     {
         return [
+                'transaction_id'=>'required',
                 'payment_type'=>'required',
                 'donation_type'=>'required',
                 'frequency'=>'nullable',

@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('full_name',255);
             $table->string('email',255)->unique();
             $table->string('password',255);
-            $table->boolean('verify_email');
+            $table->boolean('verify_email')->default(0);
             $table->string('otp')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
             $table->boolean('otp_verified_at')->default(false);
             $table->string('image')->default('deafult/user.png');
-            $table->enum('role', ['ADMIN']);
+            $table->enum('role', ['ADMIN','USER']);
             $table->enum('status',['active','inactive'])->default('inactive');
             $table->rememberToken();
             $table->timestamps();
