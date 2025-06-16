@@ -42,7 +42,8 @@ class RegisterRequest extends FormRequest
                 }
             },
         ],
-        'image'=>'nullable|image|mimes:png,jpg,jpeg,svg|max:10240'
+        'image'=>'nullable|image|mimes:png,jpg,jpeg,svg|max:10240',
+       
         ];
     }
 }

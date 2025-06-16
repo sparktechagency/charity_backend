@@ -28,7 +28,7 @@ return new class extends Migration
             $table->decimal('start_budget',10,2)->default(0);
             $table->decimal('end_budget',10,2)->default(0);
             $table->integer('duration')->nullable();
-            $table->enum('status',['Pending','Declared','Remove'])->default('Pending');
+            $table->enum('status',['Pending','Declared','Completed'])->default('Pending');
             $table->timestamps();
         });
     }

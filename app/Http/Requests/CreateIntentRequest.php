@@ -22,7 +22,7 @@ class CreateIntentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => 'required|numeric|min:1',
+            'amount' => 'required|min:1',
             'payment_method' => 'required|string',
         ];
     }

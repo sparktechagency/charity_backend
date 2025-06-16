@@ -13,13 +13,31 @@ use Illuminate\Support\Facades\Mail;
 
 class ServiceBookController extends Controller
 {
-    public function getBook()
+    public function getBook(Request $request)
     {
         try {
-            $bookings = ServiceBook::latest()->paginate(10);
+            $bookings = ServiceBook::latest()->paginate($request->per_page);
             return $this->sendResponse($bookings, 'Bookings retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('Error fetching bookings.'.$e->getMessage(),[],500);
+        }
+    }
+    public function getAvailableBookingTime(Request $request)
+    {
+        try {
+            $today = now()->toDateString();
+            $bookings = ServiceBook::whereDate('book_date', $today)->get(['book_time', 'book_date']);
+
+            if ($bookings->isEmpty()) {
+                return $this->sendError('No bookings available for today.', [], 404);
+            }
+
+            return $this->sendResponse([
+                'book_time' => $bookings->pluck('book_time')->unique()->values(),
+                'book_date' => $bookings->pluck('book_date')->unique()->values(),
+            ], 'Booking times retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Error fetching bookings. ' . $e->getMessage(), [], 500);
         }
     }
     public function createBook(ServiceBookRequest $request)
@@ -36,7 +54,6 @@ class ServiceBookController extends Controller
             return $this->sendError('Failed to create booking. ' . $e->getMessage(), [], 500);
         }
     }
-
     public function bookStatus(Request $request)
     {
         try {

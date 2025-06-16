@@ -17,9 +17,11 @@ class ContributorOfAuctionWinnerMail extends Mailable
      * Create a new message instance.
      */
     protected $contributor;
-    public function __construct($contributor)
+    protected $link;
+    public function __construct($contributor,$link)
     {
         $this->contributor = $contributor;
+        $this->link = $link->link;
     }
 
     /**
@@ -39,7 +41,7 @@ class ContributorOfAuctionWinnerMail extends Mailable
     {
         return new Content(
             view: 'contributorOfAuctionWinner',
-            with:['winner' => $this->contributor]
+            with:['winner' => $this->contributor,$this->link]
         );
     }
 

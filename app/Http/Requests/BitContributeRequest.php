@@ -14,12 +14,7 @@ class BitContributeRequest extends FormRequest
     {
         return [
             'auction_id' => 'required|exists:auctions,id',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'contact_number' => 'required|string|max:100',
             'bit_online' => 'required|numeric',
-            'payment_type' => 'required',
-            'card_number' => 'required|string|max:255',
         ];
     }
 }

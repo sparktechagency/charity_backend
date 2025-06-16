@@ -33,14 +33,18 @@ class UserController extends Controller
 
                 $validated['image'] = 'uploads/users/' . $filename;
             }
+            $otp = rand(100000, 999999);
             $validated['password'] = bcrypt($validated['password']);
+            $validated['otp']= $otp;
+            $validated['otp_expires_at'] = now()->addMinutes(2);
+            $validated['role'] = 'USER';
             $user = User::create($validated);
-            if($user){
-                $otp = rand(100000, 999999);
-                $otp_info=[
-                    'otp' =>$otp,
-                    'full_name' => $validated['full_name']
+            if ($user) {
+                $otp_info = [
+                    'otp' => $otp,
+                    'full_name' => $validated['full_name'],
                 ];
+
                 Mail::to($validated['email'])->queue(new OTPMail($otp_info));
             }
             return $this->sendResponse($user, 'User registered successfully.');
@@ -49,11 +53,12 @@ class UserController extends Controller
         }
     }
 
+
     public function login(LoginRequest $request)
     {
         try {
             $validated = $request->validated();
-            $user = User::where('email', $validated['email'])->first();
+            $user = User::where('email', $validated['email'])->where('verify_email',1)->first();
             if (!$user) {
                 return $this->sendError('Invalid credentials.', ['email' => 'User with this email does not exist.']);
             }
@@ -74,7 +79,7 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validated();
-            $admin = User::where('email', $validated['email'])->where('role','ADMIN')->where('status','active')->first();
+            $admin = User::where('email', $validated['email'])->whereIn('role',['ADMIN','USER'])->where('status','active')->first();
             if (!$admin) {
                 return $this->sendError("Invalid email.",['email'=>'Email does not exist.']);
             } else {
@@ -100,6 +105,7 @@ class UserController extends Controller
             $user = User::where('otp', $validated['otp'])
                         ->where('verify_email', 0)
                         ->first();
+
             if (!$user) {
                 return $this->sendError('Invalid OTP.',['otp'=>'OTP does not exist.']);
             }
@@ -141,13 +147,13 @@ class UserController extends Controller
         try {
             $user = Auth::user();
             $image = $user->image;
-            if ($request->hasFile('profile')) {
-                $oldImagePath = public_path($user->image);
-                if ($user->image && file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
-                $imagePath = time() . '.' . $request->file('profile')->getClientOriginalExtension();
-                $request->file('profile')->move(public_path('uploads/profile'), $imagePath);
+            if ($request->hasFile('image')) {
+                // $oldImagePath = public_path($user->image);
+                // if ($user->image && file_exists($oldImagePath)) {
+                //     unlink($oldImagePath);
+                // }
+                $imagePath = time() . '.' . $request->file('image')->getClientOriginalExtension();
+                $request->file('image')->move(public_path('uploads/profile'), $imagePath);
                 $image = 'uploads/profile/' . $imagePath;
             }
             $user->full_name = $request->full_name ?? $user->full_name;

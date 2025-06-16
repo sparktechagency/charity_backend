@@ -117,12 +117,24 @@ class PodcastStoreController extends Controller
                 $validated['thumbnail'] = 'uploads/thumbnails/' . $thumbnailName;
             }
             $podcast->update($validated);
-            $podcast->mp3 = url($podcast->mp3);
-            $podcast->host_profile = url($podcast->host_profile);
-            $podcast->guest_profile = url($podcast->guest_profile);
-            $podcast->thumbnail = url($podcast->thumbnail);
+            $podcast->mp3 = url($podcast->mp3) ?? $podcast->mp3;
+            $podcast->host_profile = url($podcast->host_profile) ?? $podcast->host_profile;
+            $podcast->guest_profile = url($podcast->guest_profile) ?? $podcast->guest_profile;
+            $podcast->thumbnail = url($podcast->thumbnail) ?? $podcast->thumbnail;
 
             return $this->sendResponse($podcast, 'Podcast updated successfully.');
+        } catch (Exception $e) {
+            return $this->sendError("An error occurred: " . $e->getMessage(), [], 500);
+        }
+    }
+    public function detailsPodcast(Request $request)
+    {
+        try {
+            $podcast = PodcastStore::find($request->podcast_id);
+            if(!$podcast){
+                return $this->sendError("Podcast not found.");
+            }
+            return $this->sendResponse($podcast, 'Podcast deleted successfully.');
         } catch (Exception $e) {
             return $this->sendError("An error occurred: " . $e->getMessage(), [], 500);
         }

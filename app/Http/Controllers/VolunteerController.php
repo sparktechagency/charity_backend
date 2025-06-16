@@ -19,7 +19,7 @@ class VolunteerController extends Controller
         try {
             $validated = $request->validated();
             $search = $validated['search'] ?? '';
-            $manage_volunteer = $validated['manage_volunteer'] ?? '';
+            $status = $validated['status'] ?? '';
             $perPage = $validated['per_page'] ?? 10;
             $query = Volunteer::query();
             if (!empty($search)) {
@@ -28,19 +28,19 @@ class VolunteerController extends Controller
                           ->orWhere('email', 'like', '%' . $search . '%')
                           ->orWhere('contact_number', 'like', '%' . $search . '%')
                           ->orWhere('location', 'like', '%' . $search . '%')
-                          ->orWhere('donated', 'like', '%' . $search . '%')
-                          ->orWhere('status', 'like', '%' . $search . '%');
+                          ->orWhere('donated', 'like', '%' . $search . '%');
                 });
             }
-            if (!empty($manage_volunteer)) {
-                $query->where('manage_volunteer', $manage_volunteer);
+            if (!empty($status)) {
+                $query->where('status', 'like', '%' . $status . '%');
             }
-            $volunteers = $query->paginate($perPage);
+            $volunteers = $query->orderBy('id','desc')->paginate($perPage);
             return $this->sendResponse($volunteers, 'Volunteers retrieved successfully!');
         } catch (Exception $e) {
             return $this->sendError("An error occurred: " . $e->getMessage(), [], 500);
         }
     }
+
     public function createVolunteer(CreateVolunteerRequest $request)
     {
         try {
