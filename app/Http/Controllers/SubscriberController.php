@@ -22,19 +22,27 @@ class SubscriberController extends Controller
     public function getSubscriber(Request $request)
     {
         try {
-            $subscribers = Subscriber::orderBy('id', 'desc')->paginate($request->per_page ?? 10);
-            $data = $subscribers->getCollection()->map(function ($subscribe) {
-                $volunteer = Volunteer::where('email', $subscribe->email)->select('name')->first();
+            $perPage = $request->input('per_page', 10);
+            $search = $request->input('search');
+
+            $query = Subscriber::query();
+
+            if ($search) {
+                $query->where('email', 'like', '%' . $search . '%');
+            }
+
+            $subscribers = $query->orderBy('id', 'desc')->paginate($perPage);
+
+            $subscribers->getCollection()->transform(function ($subscriber) {
                 return [
-                    'id' => $subscribe->id,
-                    'name' => $volunteer->name ?? 'N/A',
-                    'email' => $subscribe->email,
-                    'subscribed_on' => $subscribe->created_at->format('Y-m-d H:i:s'),
+                    'id' => $subscriber->id,
+                    'email' => $subscriber->email,
+                    'subscribed_on' => $subscriber->created_at->format('Y-m-d H:i:s'),
                 ];
             });
-            $subscribers->setCollection($data);
+
             return $this->sendResponse($subscribers, "Subscribers retrieved successfully.");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError("An error occurred: " . $e->getMessage(), [], 500);
         }
     }

@@ -22,7 +22,7 @@ class GetVolunteerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'manage_volunter' => 'nullable|string|in:Pending,Approved,Suspended',
+            'status' => 'nullable|string|in:Pending,Approved,Suspended',
             'search'=>'nullable|string|max:100',
             'per_page'=> 'numeric',
         ];

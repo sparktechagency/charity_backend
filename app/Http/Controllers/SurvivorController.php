@@ -40,6 +40,8 @@ class SurvivorController extends Controller
                     'payment_type' => $validated['payment_type'] ?? 'card',
                     'transaction_id' => $validated['transaction_id'] ?? 'card',
                     'frequency' => $validated['frequency'] ?? null,
+                    'phone_number'=>$validated['phone_number'] ?? null,
+                    'payment_gatway'=>$validated['payment_gatway'] ,
                     'payment_status' => 'Paid',
                 ]);
                 if ($transition->amount > 0) {

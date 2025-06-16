@@ -77,12 +77,14 @@ class AuctionController extends Controller
                     return $this->sendError('Invalid status filter.', [], 400);
                 }
             }
-            $auctions = $query->latest()->paginate(10);
+            $perPage = $request->input('per_page', 10);
+            $auctions = $query->latest()->paginate($perPage);
             return $this->sendResponse($auctions, 'Auctions retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('Error fetching auctions: ' . $e->getMessage(), [], 500);
         }
     }
+
     public function auction(AuctionRequest $request)
     {
         try {
@@ -147,4 +149,68 @@ class AuctionController extends Controller
             return $this->sendError("An error occurred: " . $e->getMessage(), [], 500);
         }
     }
+    public function auctionDetails(Request $request)
+    {
+        try {
+            $auction = Auction::find($request->id);
+            if(!$auction){
+                return $this->sendError('Auction not found.');
+            }
+            return $this->sendResponse($auction, 'Auction details retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError("Failed to retrieve auction: " . $e->getMessage(), [], 500);
+        }
+    }
+    public function updateAuction(AuctionRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+            $auction = Auction::find($request->id);
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $imagePath = public_path('uploads/auctions/');
+                $image->move($imagePath, $imageName);
+                $auction->image = 'uploads/auctions/' . $imageName;
+            }
+            if ($request->hasFile('profile')) {
+                $profile = $request->file('profile');
+                $profileName = time() . '-' . uniqid() . '.' . $profile->getClientOriginalExtension();
+                $profilePath = public_path('uploads/auctions/profiles/');
+                $profile->move($profilePath, $profileName);
+                $auction->profile = 'uploads/auctions/profiles/' . $profileName;
+            }
+            $auction->title = $validated['title'];
+            $auction->description = $validated['description'];
+            $auction->donate_share = $validated['donate_share'];
+            $auction->name = $validated['name'];
+            $auction->email = $validated['email'];
+            $auction->contact_number = $validated['contact_number'];
+            $auction->city = $validated['city'] ?? null;
+            $auction->address = $validated['address'] ?? null;
+            $auction->payment_type = $validated['payment_type'] ?? null;
+            $auction->card_number = $validated['card_number'] ?? null;
+            $auction->save();
+            return $this->sendResponse($auction, 'Auction updated successfully.');
+        } catch (Exception $e) {
+            return $this->sendError("An error occurred: " . $e->getMessage(), [], 500);
+        }
+    }
+    public function deleteAuction(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required|integer|exists:auctions,id',
+            ]);
+            $auction = Auction::find($request->id);
+            if (!$auction) {
+                return $this->sendError('Auction not found.');
+            }
+            $auction->delete();
+            return $this->sendResponse([], 'Auction deleted successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('An error occurred: ' . $e->getMessage());
+        }
+    }
+
 }

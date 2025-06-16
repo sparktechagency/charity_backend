@@ -22,14 +22,17 @@ class PodcastRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'podcast_title' => 'required|string|max:255',
-            'host_title' => 'required|string|max:255',
-            'guest_title' => 'required|string|max:255',
-            'host_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240', // 10 MB
-            'guest_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240', // 10 MB
-            'description' => 'nullable|string|max:65,535',
-            'mp3' => 'required|file|mimetypes:audio/mpeg,audio/mp3|max:1024000', // 1 GB = 1024000 KB
-            'thumbnail' => 'nullable|image|max:2048',
+            'podcast_id'     => 'sometimes|exists:podcast_stores,id', // only for update
+            'podcast_title'  => 'required|string|max:255',
+            'host_title'     => 'required|string|max:255',
+            'guest_title'    => 'required|string|max:255',
+            'host_profile'   => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',  // 10MB
+            'guest_profile'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',  // 10MB
+            'description'    => 'nullable|string|max:65535',
+            'mp3'            => $this->isMethod('post') ?
+                                'required|mimetypes:audio/mpeg,audio/mp3|max:1024000' :
+                                'nullable|mimetypes:audio/mpeg,audio/mp3|max:1024000',
+            'thumbnail'      => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2MB
         ];
     }
 }

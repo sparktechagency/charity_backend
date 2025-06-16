@@ -41,6 +41,15 @@ class FaqController extends Controller
             return $this->sendError('Failed to update FAQ.'.$e->getMessage(),[],500);
         }
     }
+    public function Faq(Request $request)
+    {
+        try {
+            $faq = Faq::findOrFail($request->faq_id);
+            return $this->sendResponse($faq, 'FAQ retrived successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to delete FAQ.'.$e->getMessage(),[],500);
+        }
+    }
 
     public function deleteFaq(Request $request)
     {

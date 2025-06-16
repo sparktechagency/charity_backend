@@ -135,7 +135,7 @@
             </tr>
             <tr>
                 <th>Amount</th>
-                <td class="amount">£ {{ number_format($transaction['amount'], 2) }}</td>
+                <td class="amount">$ {{ number_format($transaction['amount'], 2) }}</td>
             </tr>
             <tr>
                 <th>Status</th>

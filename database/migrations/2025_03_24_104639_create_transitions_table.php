@@ -16,11 +16,13 @@ return new class extends Migration
             $table->string('invoice');
             $table->string('transaction_id');
             $table->enum('payment_type',['card','apple_pay','google_pay','paypal_pay'])->default('card');
-            $table->enum('donation_type',['one_time_donate','recurring'])->default('one_time_donate');
+            $table->enum('donation_type',['one_time_donate','recurring'])->nullable();
             $table->enum('frequency',['montly','quantely','annually'])->nullable();
             $table->string('name',255);
             $table->string('email',255);
             $table->decimal('amount', 10, 2);
+            $table->string('currency')->default('GBP');
+            $table->enum('payment_gatway',['stripe','paypal'])->default('stripe');
             $table->string('phone_number',100)->nullable();
             $table->text('remark')->nullable();
             $table->enum('payment_status', ['Paid', 'Pending','Failed'])->default('Pending');

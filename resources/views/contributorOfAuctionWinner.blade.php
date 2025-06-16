@@ -1,44 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winner Details</title>
+    <title>Auction Winner Notification</title>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+            font-family: 'Inter', Arial, sans-serif;
+            background: #f4f6f8;
             margin: 0;
             padding: 30px;
         }
 
-        .winner-card {
+        .container {
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.1);
-            width: 100%;
             max-width: 650px;
+            margin: auto;
             padding: 40px;
-            text-align: center;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
         }
 
-        .winner-card h2 {
+        h2 {
             color: #2c3e50;
-            font-size: 30px;
+            font-size: 28px;
             margin-bottom: 20px;
-            font-weight: bold;
         }
 
-        .congratulations-message {
+        .highlight {
+            background-color: #eafaf1;
             color: #27ae60;
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 30px;
-            background-color: #e0f7ea;
-            padding: 15px;
+            padding: 14px 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
         }
 
         table {
@@ -47,126 +43,113 @@
             margin-bottom: 20px;
         }
 
-        table th,
-        table td {
+        th, td {
+            padding: 12px 10px;
             text-align: left;
-            padding: 15px;
-            font-size: 16px;
-            border-bottom: 1px solid #f4f4f4;
-            color: #555;
+            font-size: 15px;
+            vertical-align: top;
         }
 
-        table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
+        th {
+            color: #444;
+            width: 180px;
+            white-space: nowrap;
+        }
+
+        td {
             color: #333;
         }
 
-        table td {
-            background-color: #fefefe;
-            color: #333;
-        }
-
-        .status-badge {
-            padding: 8px 15px;
+        .badge {
+            padding: 6px 14px;
             border-radius: 20px;
-            color: #fff;
             font-size: 14px;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background-color: #f39c12;
+            font-weight: bold;
+            color: #fff;
         }
 
         .status-winner {
             background-color: #27ae60;
         }
 
+        .status-pending {
+            background-color: #f39c12;
+        }
+
         .status-rejected {
             background-color: #e74c3c;
         }
 
-        .icon {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-
-        .footer-note {
-            margin-top: 30px;
-            font-size: 14px;
-            color: #888;
-        }
-
-        .auction-image-container {
+        .footer {
+            font-size: 13px;
+            color: #777;
             text-align: center;
-            margin-bottom: 20px;
+            margin-top: 25px;
         }
 
-        .auction-img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+        .icon {
+            margin-right: 8px;
         }
     </style>
 </head>
-
 <body>
-    <div class="winner-card">
-        <h2>🏆 Winner Details</h2>
-
-        <!-- Congratulations Message -->
-        <div class="congratulations-message">
-            🎉 Congratulations, {{ $winner['name'] }}! 🎉<br> You've won the auction.
-        </div>
-
-        <table>
-            <tr>
-                <th><span class="icon">🎯</span>Auction Title</th>
-                <td>{{ $winner->auction->title ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-                <th><span class="icon">📝</span>Description</th>
-                <td>{{ $winner->auction->description ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-                <th><span class="icon">👤</span>Name</th>
-                <td>{{ $winner['name'] }}</td>
-            </tr>
-            <tr>
-                <th><span class="icon">📧</span>Email</th>
-                <td>{{ $winner['email'] }}</td>
-            </tr>
-            <tr>
-                <th><span class="icon">📞</span>Contact Number</th>
-                <td>{{ $winner['contact_number'] }}</td>
-            </tr>
-            <tr>
-                <th><span class="icon">💸</span>Bid Amount</th>
-                <td>${{ number_format($winner['bit_online'], 2) }}</td>
-            </tr>
-            <tr>
-                <th><span class="icon">📅</span>Date</th>
-                <td>{{ \Carbon\Carbon::parse($winner['created_at'])->format('F j, Y') }}</td>
-            </tr>
-            <tr>
-                <th><span class="icon">✅</span>Status</th>
-                <td>
-                    <span class="status-badge status-{{ strtolower($winner['status']) }}">
-                        {{ ucfirst($winner['status']) }}
-                    </span>
-                </td>
-            </tr>
-        </table>
-
-        <div class="footer-note">
-            This is an auto-generated message based on the auction results.
-        </div>
+<div class="container">
+    <h2>🏆 Winner Details</h2>
+    <div class="highlight">
+        🎉 Congratulations, {{ $winner->user->full_name ?? 'N/A' }}! You've won the auction.
     </div>
-</body>
 
+    <table>
+        <tr>
+            <th><span class="icon">🎯</span>Auction Title</th>
+            <td>{{ $winner->auction->title ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <th><span class="icon">📝</span>Description</th>
+            <td>{{ $winner->auction->description ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <th><span class="icon">👤</span>Name</th>
+            <td>{{ $winner->user->full_name ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <th><span class="icon">📧</span>Email</th>
+            <td>{{ $winner->user->email ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <th><span class="icon">📞</span>Contact Number</th>
+            <td>{{ $winner->contact_number ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <th><span class="icon">💸</span>Bid Amount</th>
+            <td>${{ number_format($winner->bit_online ?? 0, 2) }}</td>
+        </tr>
+        <tr>
+            <th><span class="icon">📅</span>Date</th>
+            <td>{{ \Carbon\Carbon::parse($winner->created_at)->format('F j, Y') }}</td>
+        </tr>
+        <tr>
+            <th><span class="icon">✅</span>Status</th>
+            <td>
+                <span class="badge status-{{ strtolower($winner->status ?? 'pending') }}">
+                    {{ ucfirst($winner->status ?? 'Pending') }}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <th><span class="icon">💳</span>Payment Link</th>
+            <td>
+                <a href="{{ $paymentLink }}" style="display:inline-block;background:#27ae60;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold;">
+                    Complete Your Payment
+                </a>
+            </td>
+        </tr>
+
+    </table>
+
+    <div class="footer">
+        This message was automatically generated based on auction results.
+    </div>
+</div>
+</body>
 </html>

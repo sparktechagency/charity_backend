@@ -18,31 +18,57 @@ class DashboardController extends Controller
     public function dashboard(Request $request)
     {
         try {
+            $currentYear = now()->year;
+            $lastYear = now()->subYear()->year;
+
+            $monthNames = [
+                1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
+                5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
+                9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
+            ];
+
+            // Actual data from database
             $approvedVolunteers = Volunteer::where('status', 'Approved')->count();
             $declaredAuctions = Auction::where('status', 'Declared')->count();
-            $uniqueContributors = Contributor::distinct('email')->count();
+            $uniqueContributors = Contributor::distinct('user_id')->count();
             $podcastsCount = PodcastStore::count();
             $subscribersCount = Subscriber::count();
             $teamsCount = Team::count();
-            $paidTransitions = Transition::where('payment_status', 'Paid')->sum('amount'); // Assuming 'amount' is the column name
+            $paidTransitions = Transition::where('payment_status', 'Paid')->sum('amount');
             $acceptedServiceBooks = ServiceBook::where('book_status', 'Accepted')->count();
 
-            $monthlyTransitions = Transition::where('payment_status', 'Paid')
-                ->selectRaw('MONTH(created_at) as month, SUM(amount) as total_amount')
+            // Monthly Paid Transitions for This Year
+            $monthlyThisYear = Transition::where('payment_status', 'Paid')
+                ->whereYear('created_at', $currentYear)
+                ->selectRaw('MONTH(created_at) as month, SUM(amount) as total')
                 ->groupBy('month')
-                ->orderBy('month')
-                ->get();
-            $monthNames = [
-                1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
-                7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
-            ];
-            $monthlyData = [];
-            for ($i = 1; $i <= 12; $i++) {
-                $monthlyData[$monthNames[$i]] = 0;
+                ->pluck('total', 'month');
+
+            // Monthly Paid Transitions for Last Year
+            $monthlyLastYear = Transition::where('payment_status', 'Paid')
+                ->whereYear('created_at', $lastYear)
+                ->selectRaw('MONTH(created_at) as month, SUM(amount) as total')
+                ->groupBy('month')
+                ->pluck('total', 'month');
+
+            // Prepare monthly data with month name as key
+            $thisYearData = [];
+            $lastYearData = [];
+
+            foreach ($monthNames as $month => $name) {
+                $thisYearData[] = [
+                    'month' => $name,
+                    'data' => (float)($monthlyThisYear[$month] ?? 0) 
+                ];
+
+                $lastYearData[] = [
+                    'month' => $name,
+                    'data' => (float)($monthlyLastYear[$month] ?? 0)
+                ];
             }
-            foreach ($monthlyTransitions as $transition) {
-                $monthlyData[$monthNames[$transition->month]] = $transition->total_amount;
-            }
+
+
+            // Final response structure
             $dashboardData = [
                 'approvedVolunteers' => $approvedVolunteers,
                 'declaredAuctions' => $declaredAuctions,
@@ -52,11 +78,19 @@ class DashboardController extends Controller
                 'teamsCount' => $teamsCount,
                 'paidTransitions' => $paidTransitions,
                 'acceptedServiceBooks' => $acceptedServiceBooks,
-                'monthlyTransitions' => $monthlyData,
+                'thisYear' => $thisYearData,
+                'lastYear' => $lastYearData
             ];
-            return $this->sendResponse($dashboardData, "Dashboard retrieved successfully");
+
+            return $this->sendResponse($dashboardData, "Dashboard data retrieved successfully");
         } catch (Exception $e) {
             return $this->sendError("An error occurred: " . $e->getMessage(), [], 500);
         }
     }
+
+
+
+
+
+
 }

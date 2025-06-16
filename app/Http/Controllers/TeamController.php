@@ -16,13 +16,17 @@ class TeamController extends Controller
             $query = Team::query();
 
             if ($request->search) {
-                $query->where('name', 'like', '%' . $request->search . '%')
+                $query->where(function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->search . '%')
                       ->orWhere('designation', 'like', '%' . $request->search . '%');
+                });
             }
-            $teams = $query->latest()->paginate(10);
+            $perPage = $request->per_page ?? 10;
+            $teams = $query->latest()->paginate($perPage);
+
             return $this->sendResponse($teams, 'Team members fetched successfully');
         } catch (Exception $e) {
-            return $this->sendError('Failed to fetch team members: '. $e->getMessage(),[], 500);
+            return $this->sendError('Failed to fetch team members: ' . $e->getMessage(), [], 500);
         }
     }
 
@@ -69,6 +73,17 @@ class TeamController extends Controller
             return $this->sendResponse($team, 'Team member updated successfully');
         } catch (Exception $e) {
             return $this->sendError('Error updating team member', [$e->getMessage()], 500);
+        }
+    }
+    public function team(Request $request){
+        try {
+            $team = Team::find($request->team_id);
+            if (!$team) {
+                return $this->sendError('Team member not found');
+            }
+            return $this->sendResponse($team, 'Team retrived successfully');
+        } catch (Exception $e) {
+            return $this->sendError('Error deleting team member', [$e->getMessage()], 500);
         }
     }
     public function deleteTeam(Request $request)

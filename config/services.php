@@ -36,16 +36,13 @@ return [
     ],
 
     'stripe' => [
-    'key' => env('STRIPE_KEY'),
-    'secret' => env('STRIPE_SECRET'),
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
     ],
 
     'paypal' => [
-    'key' => env('PAYPAL_CLIENT'),
-    'secret' => env('PAYPAL_SECRET'),
-
-],
-
-
-
+        'client_id' => env('PAYPAL_CLIENT_ID'),
+        'secret' => env('PAYPAL_SECRET'),
+        'base_url' => env('PAYPAL_BASE_URL', 'https://api-m.sandbox.paypal.com'), // For sandbox
+    ],
 ];

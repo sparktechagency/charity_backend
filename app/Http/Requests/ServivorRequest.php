@@ -31,6 +31,7 @@ class ServivorRequest extends FormRequest
                 'remark' => 'nullable|string|max:65,535',
                 'amount' => 'numeric',
                 'phone_number' => 'nullable|max:100',
+                'payment_gatway'=> 'in:stripe,paypal',
         ];
     }
 }
