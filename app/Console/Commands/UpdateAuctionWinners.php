@@ -41,7 +41,7 @@ class UpdateAuctionWinners extends Command
                         $auction->save();
 
                         // Build the external payment link
-                        $link = 'http://137.59.180.219:1010/winner-payment?' . http_build_query([
+                        $link = 'https://virtuehope.com/winner-payment?' . http_build_query([
                             'contributor_id' => $topContributor->id,
                             'amount'         => $topContributor->bit_online,
                             'auction_name'   => $auction->title,

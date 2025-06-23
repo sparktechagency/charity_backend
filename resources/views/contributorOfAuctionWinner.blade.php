@@ -122,7 +122,7 @@
         </tr>
         <tr>
             <th><span class="icon">💸</span>Bid Amount</th>
-            <td>${{ number_format($winner->bit_online ?? 0, 2) }}</td>
+            <td>£{{ number_format($winner->bit_online ?? 0, 2) }}</td>
         </tr>
         <tr>
             <th><span class="icon">📅</span>Date</th>
