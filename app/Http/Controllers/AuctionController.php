@@ -100,7 +100,7 @@ class AuctionController extends Controller
             }
             if ($request->hasFile('profile')) {
                 $profile = $request->file('profile');
-                $profileName = time() . '-' . $profile->getClientOriginalExtension();
+                $profileName = time() . '.' . $profile->getClientOriginalExtension();
                 $profilePath = public_path('uploads/auctions/profiles/');
                 $profile->move($profilePath, $profileName);
                 $profilePath = 'uploads/auctions/profiles/' . $profileName;
@@ -168,7 +168,7 @@ class AuctionController extends Controller
             $auction = Auction::find($request->id);
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $imageName = time() . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $imageName = time()  . '.' . $image->getClientOriginalExtension();
                 $imagePath = public_path('uploads/auctions/');
                 $image->move($imagePath, $imageName);
                 $auction->image = 'uploads/auctions/' . $imageName;
