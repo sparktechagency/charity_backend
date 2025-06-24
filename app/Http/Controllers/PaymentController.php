@@ -20,7 +20,9 @@ class PaymentController extends Controller
             $paymentIntent = PaymentIntent::create([
                 'amount' => $validated['amount'] * 100, // amount in pence for GBP
                 'currency' => 'gbp',
-                'payment_method' => $validated['payment_method'],
+                // 'payment_method' => $validated['payment_method'],
+                'automatic_payment_methods' => ['google-pay'],
+
             ]);
             return $this->sendResponse($paymentIntent, 'Payment intent created successfully.');
         } catch (\Exception $e) {
