@@ -23,7 +23,7 @@ class CreateIntentRequest extends FormRequest
     {
         return [
             'amount' => 'required|min:1',
-            'payment_method' => 'required|string',
+            // 'payment_method' => 'required|string',
         ];
     }
 }
