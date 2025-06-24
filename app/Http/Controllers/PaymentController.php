@@ -21,7 +21,7 @@ class PaymentController extends Controller
                 'amount' => $validated['amount'] * 100, // amount in pence for GBP
                 'currency' => 'gbp',
                 // 'payment_method' => $validated['payment_method'],
-                'automatic_payment_methods' => ['google-pay'],
+                'automatic_payment_methods' => ['enabled' => true],
 
             ]);
             return $this->sendResponse($paymentIntent, 'Payment intent created successfully.');
