@@ -38,6 +38,9 @@ Route::group(['controller'=>PaymentController::class],function(){
 Route::group(['controller'=>ContributorController::class],function(){
     Route::post('bit-contributor','BitContributor')->middleware('auth:sanctum','user');
     Route::get('get-contributor','getContributor')->middleware(['admin','auth:sanctum']);
+
+    Route::get('auction-soltout','auctionSoltout');
+
     Route::get('contributor-details','contributorDetails')->middleware(['admin','auth:sanctum']);
     Route::get('single-contributor-auction','singleContributorAuction')->middleware(['admin','auth:sanctum']);
     Route::patch('contributor-status-change','contributorStatusChange')->middleware(['admin','auth:sanctum']);
