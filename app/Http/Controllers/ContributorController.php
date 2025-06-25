@@ -112,6 +112,65 @@ class ContributorController extends Controller
             return $this->sendError('An error occurred: ' . $e->getMessage(), [], 500);
         }
     }
+     public function auctionSoltout(Request $request)
+    {
+        try {
+
+            $perPage = $request->input('per_page', 10);
+            $latestContributorIds = Contributor::select(DB::raw('MAX(id) as id'))
+                ->groupBy('auction_id');
+            $contributors = Contributor::with(['auction', 'user'])
+                ->whereIn('id', $latestContributorIds)
+                ->orderByDesc('id')
+                ->where('status','winner')
+                ->where('payment_status','approved')
+                ->paginate($perPage);
+            $mappedContributors = $contributors->getCollection()->map(function ($contributor) {
+                return [
+                    'id'              => $contributor->id,
+                    'user_id'         => $contributor->user_id,
+                    'auction_id'      => $contributor->auction_id,
+                    'max_bit_online'  => $contributor->bit_online,
+                    'status'          => $contributor->status,
+                    'payment_status'  => $contributor->payment_status,
+                    'user'            => [
+                        'id'    => $contributor->user->id,
+                        'name'  => $contributor->user->full_name,
+                        'email' => $contributor->user->email,
+                        'image' => $contributor->user->image,
+                    ],
+                    'auction'         => [
+                        'id'             => $contributor->auction->id ?? null,
+                        'title'          => $contributor->auction->title ?? null,
+                        'description'    => $contributor->auction->description ?? null,
+                        'name'           => $contributor->auction->name ?? null,
+                        'email'          => $contributor->auction->email ?? null,
+                        'donate_share'   => $contributor->auction->donate_share ?? null,
+                        'contact_number' => $contributor->auction->contact_number ?? null,
+                        'city'           => $contributor->auction->city ?? null,
+                        'address'        => $contributor->auction->address ?? null,
+                        'profile'        => $contributor->auction->profile ?? null,
+                        'payment_type'   => $contributor->auction->payment_type ?? null,
+                        'card_number'    => $contributor->auction->card_number ?? null,
+                        'image'          => $contributor->auction->image ?? null,
+                    ],
+                    'created_at'      => $contributor->created_at->toDateTimeString(),
+                ];
+            });
+            return $this->sendResponse([
+                'unique_user_count' => $contributors->total(),
+                'contributors'      => $mappedContributors,
+                'pagination'        => [
+                    'current_page' => $contributors->currentPage(),
+                    'last_page'    => $contributors->lastPage(),
+                    'total'        => $contributors->total(),
+                    'per_page'     => $contributors->perPage(),
+                ],
+            ], "Contributors retrieved successfully.");
+        } catch (Exception $e) {
+            return $this->sendError('An error occurred: ' . $e->getMessage(), [], 500);
+        }
+    }
     public function contributorDetails(Request $request)
     {
         try {
