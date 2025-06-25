@@ -2,153 +2,187 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - {{ $transaction['invoice'] }}</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice - {{ $transaction['invoice'] }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
-            margin: 0;
-            padding: 30px;
-        }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #fefefe;
+      margin: 0;
+      padding: 30px;
+      color: #1f2937;
+    }
 
-        .invoice-container {
-            max-width: 800px;
-            margin: auto;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-        }
+    .invoice-card {
+      max-width: 820px;
+      margin: auto;
+      border: 3px solid #3c2f27; /* FULL BORDER */
+      border-radius: 16px;
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+    }
 
-        .invoice-title {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .invoice-header {
+      background-color: #3c2f27;
+      color: #ffffff;
+      padding: 30px 40px;
+    }
 
-        .invoice-title h1 {
-            font-size: 2rem;
-            color: #1d4ed8;
-        }
+    .invoice-header h1 {
+      font-size: 1.9rem;
+      margin: 0;
+    }
 
-        .invoice-title p {
-            font-size: 1rem;
-            color: #6b7280;
-        }
+    .invoice-header span {
+      font-size: 0.95rem;
+      color: #e5e7eb;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
+    .invoice-body {
+      padding: 40px;
+    }
 
-        th,
-        td {
-            padding: 16px 12px;
-            text-align: left;
-        }
+    .section {
+      margin-bottom: 22px;
+    }
 
-        th {
-            background-color: #1d4ed8;
-            color: white;
-            font-weight: 600;
-        }
+    .section label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
 
-        td {
-            background-color: #f9fafb;
-            border-bottom: 1px solid #e5e7eb;
-            color: #374151;
-        }
+    .section p {
+      margin: 0;
+      font-size: 1rem;
+      color: #1f2937;
+    }
 
-        .amount {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #22c55e;
-        }
+    .highlight-box {
+      background: #f9fafb;
+      border-left: 6px solid #3c2f27;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
 
-        .status.paid {
-            color: #16a34a;
-            font-weight: bold;
-        }
+    .amount {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #15803d;
+    }
 
-        .status.pending {
-            color: #f59e0b;
-            font-weight: bold;
-        }
+    .status {
+      margin-top: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 6px 14px;
+      border-radius: 8px;
+      display: inline-block;
+      text-transform: capitalize;
+    }
 
-        .status.failed {
-            color: #ef4444;
-            font-weight: bold;
-        }
+    .status.paid {
+      background-color: #dcfce7;
+      color: #15803d;
+    }
 
-        footer {
-            text-align: center;
-            color: #6b7280;
-            font-size: 0.95rem;
-        }
+    .status.pending {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
 
-        .footer-link {
-            color: #1d4ed8;
-            text-decoration: none;
-        }
+    .status.failed {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
 
-        .footer-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+    footer {
+      background: #f9fafb;
+      text-align: center;
+      padding: 18px 20px;
+      font-size: 0.9rem;
+      color: #6b7280;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .footer-link {
+      color: #3c2f27;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .invoice-body {
+        padding: 30px 20px;
+      }
+
+      .invoice-header {
+        padding: 24px 20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <div class="invoice-container">
-        <div class="invoice-title">
-            <h1>Invoice #{{ $transaction['invoice'] }}</h1>
-            <p>Date: {{ \Carbon\Carbon::parse($transaction['created_at'])->format('F d, Y') }}</p>
-        </div>
-
-        <table>
-            <tr>
-                <th>Name</th>
-                <td>{{ $transaction['name'] }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ $transaction['email'] }}</td>
-            </tr>
-            <tr>
-                <th>Remark</th>
-                <td>{{ $transaction['remark'] ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-                <th>Donation Type</th>
-                <td>{{ ucfirst($transaction['donation_type']) }}</td>
-            </tr>
-            <tr>
-                <th>Payment Type</th>
-                <td>{{ ucfirst($transaction['payment_type']) }}</td>
-            </tr>
-            <tr>
-                <th>Frequency</th>
-                <td>{{ ucfirst($transaction['frequency'] ?? 'One-time') }}</td>
-            </tr>
-            <tr>
-                <th>Amount</th>
-                <td class="amount">£{{ number_format($transaction['amount'], 2) }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td class="status {{ strtolower($transaction['payment_status']) }}">
-                    {{ ucfirst($transaction['payment_status']) }}
-                </td>
-            </tr>
-        </table>
-
-        <footer>
-            Need help? <a href="mailto:{{ env('MAIL_FROM_ADDRESS') }}" class="footer-link">Contact support</a>
-        </footer>
+  <div class="invoice-card">
+    <div class="invoice-header">
+      <h1>Invoice #{{ $transaction['invoice'] }}</h1>
+      <span>Date: {{ \Carbon\Carbon::parse($transaction['created_at'])->format('F d, Y') }}</span>
     </div>
-</body>
 
+    <div class="invoice-body">
+      <div class="section">
+        <label>Name</label>
+        <p>{{ $transaction['name'] }}</p>
+      </div>
+      <div class="section">
+        <label>Email</label>
+        <p>{{ $transaction['email'] }}</p>
+      </div>
+      <div class="section">
+        <label>Remark</label>
+        <p>{{ $transaction['remark'] ?? 'N/A' }}</p>
+      </div>
+      <div class="section">
+        <label>Donation Type</label>
+        <p>{{ ucfirst($transaction['donation_type']) }}</p>
+      </div>
+      <div class="section">
+        <label>Payment Type</label>
+        <p>{{ ucfirst($transaction['payment_type']) }}</p>
+      </div>
+      <div class="section">
+        <label>Frequency</label>
+        <p>{{ ucfirst($transaction['frequency'] ?? 'One-time') }}</p>
+      </div>
+
+      <div class="highlight-box">
+        <label>Amount</label>
+        <p class="amount">£{{ number_format($transaction['amount'], 2) }}</p>
+        <label>Status</label>
+        <span class="status {{ strtolower($transaction['payment_status']) }}">
+          {{ ucfirst($transaction['payment_status']) }}
+        </span>
+      </div>
+    </div>
+
+    <footer>
+      Need help? <a href="mailto:{{ env('MAIL_FROM_ADDRESS') }}" class="footer-link">Contact support</a>
+    </footer>
+  </div>
+</body>
 </html>
