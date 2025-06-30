@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Auction Winner Notification</title>
@@ -43,7 +44,8 @@
             margin-bottom: 20px;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px 10px;
             text-align: left;
             font-size: 15px;
@@ -90,66 +92,80 @@
         .icon {
             margin-right: 8px;
         }
+
+        .btn-link {
+            display: inline-block;
+            background: #27ae60;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn-link:hover {
+            background-color: #219150;
+        }
     </style>
 </head>
+
 <body>
-<div class="container">
-    <h2>🏆 Winner Details</h2>
-    <div class="highlight">
-        🎉 Congratulations, {{ $winner->user->full_name ?? 'N/A' }}! You've won the auction.
+    <div class="container">
+        <h2>🏆 Winner Details</h2>
+        <div class="highlight">
+            🎉 Congratulations, {{ $data['name'] ?? 'N/A' }}! You've won the auction.
+        </div>
+
+        <table>
+            <tr>
+                <th><span class="icon">🎯</span>Auction Title</th>
+                <td>{{ $data['title'] ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th><span class="icon">📝</span>Description</th>
+                <td>{{ $data['description'] ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th><span class="icon">👤</span>Name</th>
+                <td>{{ $data['name'] ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th><span class="icon">📧</span>Email</th>
+                <td>{{ $data['email'] ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th><span class="icon">📞</span>Contact Number</th>
+                <td>{{ $data['contact_number'] ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th><span class="icon">💸</span>Bid Amount</th>
+                <td>£{{ number_format($data['amount'] ?? 0, 2) }}</td>
+            </tr>
+            <tr>
+                <th><span class="icon">📅</span>Date</th>
+                <td>{{ \Carbon\Carbon::parse($data['date'])->format('F j, Y') }}</td>
+            </tr>
+            <tr>
+                <th><span class="icon">✅</span>Status</th>
+                <td>
+                    <span class="badge status-{{ strtolower($data['status'] ?? 'pending') }}">
+                        {{ ucfirst($data['status'] ?? 'Pending') }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th><span class="icon">💳</span>Payment Link</th>
+                <td>
+                    <a href="{{ $data['link'] }}" class="btn-link">Complete Your Payment</a>
+                </td>
+            </tr>
+        </table>
+
+        <div class="footer">
+            This message was automatically generated based on auction results.<br>
+            Please complete your payment to confirm your winning status.
+        </div>
     </div>
-
-    <table>
-        <tr>
-            <th><span class="icon">🎯</span>Auction Title</th>
-            <td>{{ $winner->auction->title ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <th><span class="icon">📝</span>Description</th>
-            <td>{{ $winner->auction->description ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <th><span class="icon">👤</span>Name</th>
-            <td>{{ $winner->user->full_name ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <th><span class="icon">📧</span>Email</th>
-            <td>{{ $winner->user->email ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <th><span class="icon">📞</span>Contact Number</th>
-            <td>{{ $winner->contact_number ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <th><span class="icon">💸</span>Bid Amount</th>
-            <td>£{{ number_format($winner->bit_online ?? 0, 2) }}</td>
-        </tr>
-        <tr>
-            <th><span class="icon">📅</span>Date</th>
-            <td>{{ \Carbon\Carbon::parse($winner->created_at)->format('F j, Y') }}</td>
-        </tr>
-        <tr>
-            <th><span class="icon">✅</span>Status</th>
-            <td>
-                <span class="badge status-{{ strtolower($winner->status ?? 'pending') }}">
-                    {{ ucfirst($winner->status ?? 'Pending') }}
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <th><span class="icon">💳</span>Payment Link</th>
-            <td>
-                <a href="{{ $paymentLink }}" style="display:inline-block;background:#27ae60;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold;">
-                    Complete Your Payment
-                </a>
-            </td>
-        </tr>
-
-    </table>
-
-    <div class="footer">
-        This message was automatically generated based on auction results.
-    </div>
-</div>
 </body>
+
 </html>
