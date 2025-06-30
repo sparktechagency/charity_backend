@@ -20,16 +20,18 @@ class UpdateAuctionWinners extends Command
 
         Auction::where('status', 'Declared')->chunk(100, function ($auctions) {
             foreach ($auctions as $auction) {
-                // Validate duration
-                if (!is_numeric($auction->duration)) {
+                $duration = (int) $auction->duration;
+
+                if ($duration <= 0) {
                     $this->warn("Invalid duration for auction ID: {$auction->id}");
                     continue;
                 }
 
-                $expirationDate = $auction->updated_at->copy()->addDays($auction->duration);
+                $expirationDate = $auction->updated_at->copy()->addDays($duration);
 
                 if (now()->greaterThanOrEqualTo($expirationDate)) {
-                    $topContributor = Contributor::with(['user', 'auction'])->where('auction_id', $auction->id)
+                    $topContributor = Contributor::with(['user', 'auction'])
+                        ->where('auction_id', $auction->id)
                         ->orderByDesc('bit_online')
                         ->first();
 
@@ -40,25 +42,33 @@ class UpdateAuctionWinners extends Command
                         $auction->status = 'Completed';
                         $auction->save();
 
-                        // Build the external payment link
-                        $link = 'https://virtuehope.com/winner-payment?' . http_build_query([
+                        $link = 'https://www.virtuehope.com/winner-payment?' . http_build_query([
                             'contributor_id' => $topContributor->id,
                             'amount'         => $topContributor->bit_online,
                             'auction_name'   => $auction->title,
                             'description'    => $auction->description,
-                            'winner_name'    => $topContributor->user->name,
-                            'email'          => $topContributor->email,
+                            'winner_name'    => $topContributor->user->full_name,
+                            'email'          => $topContributor->user->email,
                         ]);
 
-                        try {
-                            Mail::to($topContributor->email)->queue(
-                                new ContributorOfAuctionWinnerMail($topContributor, $link)
-                            );
-                        } catch (\Exception $e) {
-                            Log::error("Failed to send winner email for auction ID {$auction->id}: " . $e->getMessage());
-                        }
+                        $data = [
+                            'title'          => $auction->title,
+                            'description'    => $auction->description,
+                            'name'           => $topContributor->user->full_name,
+                            'email'          => $topContributor->user->email,
+                            'contact_number' => $topContributor->contact_number,
+                            'amount'         => $topContributor->bit_online,
+                            'date'           => $topContributor->created_at,
+                            'status'         => $topContributor->status,
+                            'link'           => $link,
+                        ];
 
-                        $this->info("Winner selected and notified for auction ID: {$auction->id}");
+                        try {
+                            Mail::to($data['email'])->queue(new ContributorOfAuctionWinnerMail($data));
+                            $this->info("Winner selected and notified for auction ID: {$auction->id}");
+                        } catch (\Exception $e) {
+                            Log::error("Email send failed for auction ID: {$auction->id}. Error: " . $e->getMessage());
+                        }
                     } else {
                         $this->warn("No contributors found for auction ID: {$auction->id}");
                         $auction->status = 'Completed';

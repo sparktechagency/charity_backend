@@ -24,7 +24,7 @@ class SurvivorController extends Controller
         try {
             $validated = $request->validated();
                 if ($validated['donation_type'] === 'recurring') {
-                    $allowedFrequencies = ['montly', 'quantely', 'annually'];
+                    $allowedFrequencies = ['monthly', 'quantely', 'annually','single_payment'];
                     if (!in_array($validated['frequency'], $allowedFrequencies)) {
                         return $this->sendError("Frequency not found");
                     }
